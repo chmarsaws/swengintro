@@ -2,11 +2,31 @@
 # Run from repo root after initial git commit: .\facilitator\scripts\dry-run-lesson3.ps1
 
 $ErrorActionPreference = "Stop"
+if ($PSVersionTable.PSVersion.Major -ge 7) {
+    $PSNativeCommandUseErrorActionPreference = $false
+}
+
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 Set-Location $repoRoot
 
 function Assert($cond, $msg) {
     if (-not $cond) { throw $msg }
+}
+
+function Invoke-Git {
+    param(
+        [string[]]$Command,
+        [int[]]$AllowExitCodes = @(0)
+    )
+    $prev = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    $out = & git @Command 2>&1 | ForEach-Object { "$_" }
+    $code = $LASTEXITCODE
+    $ErrorActionPreference = $prev
+    if ($AllowExitCodes -notcontains $code) {
+        throw "git $($Command -join ' ') failed with exit code $code`n$($out -join "`n")"
+    }
+    return $out
 }
 
 Write-Host "=== Dry-run: Lesson 3 merge conflict ===" -ForegroundColor Cyan
@@ -15,15 +35,11 @@ if (-not (Test-Path ".git")) {
     throw "Run git init and initial commit first (see README / RUNBOOK)."
 }
 
-$mainBranch = git rev-parse --abbrev-ref HEAD
-git checkout main 2>$null
-
-# Snapshot main before experiment
-$mainBefore = git rev-parse HEAD
+Invoke-Git -Command @("checkout", "main") | Out-Null
+$script:MainBefore = "$(Invoke-Git -Command @('rev-parse', 'HEAD'))".Trim()
 
 try {
-    # --- Learner branch with display_name (Lesson 2 simulation) ---
-    git checkout -B dry-run/learner-l2
+    Invoke-Git -Command @("checkout", "-B", "dry-run/learner-l2") | Out-Null
 
     @'
 """Team roster — members and their identifiers."""
@@ -56,31 +72,28 @@ def get_member(member_id: str) -> TeamMember | None:
 
 def list_members() -> list[TeamMember]:
     return list(TEAM)
-'@ | Set-Content "app\src\teampulse\roster.py" -Encoding utf8NoBOM
+'@ | Set-Content "app\src\teampulse\roster.py" -Encoding UTF8
 
     (Get-Content "app\src\teampulse\status.py" -Raw) `
         -replace 'member\.name', 'member.display_name' |
-        Set-Content "app\src\teampulse\status.py" -Encoding utf8NoBOM -NoNewline
+        Set-Content "app\src\teampulse\status.py" -Encoding UTF8 -NoNewline
 
-    git add app/src/teampulse/roster.py app/src/teampulse/status.py
-    git commit -m "feat(roster): add display_name (dry-run learner)" | Out-Null
+    Invoke-Git -Command @("add", "app/src/teampulse/roster.py", "app/src/teampulse/status.py") | Out-Null
+    Invoke-Git -Command @("commit", "-m", "feat(roster): add display_name (dry-run learner)") | Out-Null
 
-    # --- Facilitator seed on main ---
-    git checkout main
+    Invoke-Git -Command @("checkout", "main") | Out-Null
     & (Join-Path $PSScriptRoot "seed-lesson3-conflict.ps1")
 
-    # --- Merge and expect conflict ---
-    git checkout dry-run/learner-l2
-    $mergeOut = git merge main 2>&1 | Out-String
+    Invoke-Git -Command @("checkout", "dry-run/learner-l2") | Out-Null
+    $mergeOut = (Invoke-Git -Command @("merge", "main") -AllowExitCodes 0, 1) -join "`n"
     Write-Host $mergeOut
 
-    $conflict = git diff --name-only --diff-filter=U
+    $conflict = Invoke-Git -Command @("diff", "--name-only", "--diff-filter=U")
     Assert ($conflict -contains "app/src/teampulse/status.py") `
         "Expected conflict in status.py; unmerged: $conflict"
 
     Write-Host "Conflict detected (expected)." -ForegroundColor Yellow
 
-    # Resolve: facilitator default + learner display_name
     @'
 """Member status — online, away, or offline."""
 
@@ -113,10 +126,19 @@ def set_status(member_id: str, status: str) -> None:
 def format_dashboard_line(member: TeamMember) -> str:
     status = get_status(member)
     return f"{member.display_name}: {status}"
-'@ | Set-Content "app\src\teampulse\status.py" -Encoding utf8NoBOM
+'@ | Set-Content "app\src\teampulse\status.py" -Encoding UTF8
 
-    git add app/src/teampulse/status.py
-    git commit -m "merge: resolve status.py (dry-run)" | Out-Null
+    Invoke-Git -Command @("add", "app/src/teampulse/status.py") | Out-Null
+    Invoke-Git -Command @("commit", "-m", "merge: resolve status.py (dry-run)") | Out-Null
+
+    (Get-Content "app/tests/test_cli.py" -Raw) -replace 'Alex Chen', 'Alex C.' |
+        Set-Content "app/tests/test_cli.py" -Encoding UTF8
+    (Get-Content "app/tests/test_status.py" -Raw) `
+        -replace 'DEFAULT_STATUS == "offline"', 'DEFAULT_STATUS == "away"' `
+        -replace 'Jordan Lee', 'Jordan L.' |
+        Set-Content "app/tests/test_status.py" -Encoding UTF8
+    Invoke-Git -Command @("add", "app/tests/test_cli.py", "app/tests/test_status.py") | Out-Null
+    Invoke-Git -Command @("commit", "-m", "test: align expectations after merge (dry-run)") | Out-Null
 
     Push-Location app
     pytest -q
@@ -129,7 +151,10 @@ def format_dashboard_line(member: TeamMember) -> str:
     Write-Host "Conflict in status.py, merge resolved, pytest green."
 }
 finally {
-    git checkout main | Out-Null
-    git reset --hard $mainBefore | Out-Null
-    git branch -D dry-run/learner-l2 2>$null | Out-Null
+    if ($script:MainBefore) {
+        Invoke-Git -Command @("checkout", "main") | Out-Null
+        Invoke-Git -Command @("reset", "--hard", $script:MainBefore) | Out-Null
+        $ErrorActionPreference = "Continue"
+        git branch -D dry-run/learner-l2 2>&1 | Out-Null
+    }
 }

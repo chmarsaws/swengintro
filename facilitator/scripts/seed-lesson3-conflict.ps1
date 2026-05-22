@@ -2,14 +2,19 @@
 # Run from repo root: .\facilitator\scripts\seed-lesson3-conflict.ps1
 
 $ErrorActionPreference = "Stop"
+if ($PSVersionTable.PSVersion.Major -ge 7) {
+    $PSNativeCommandUseErrorActionPreference = $false
+}
+
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot "..\..")
 Set-Location $repoRoot
 
 $statusFile = Join-Path $repoRoot "app\src\teampulse\status.py"
 $content = Get-Content $statusFile -Raw
 
-if ($content -notmatch 'DEFAULT_STATUS = "offline"') {
-    Write-Host "WARNING: DEFAULT_STATUS is not 'offline'. Conflict seed may already be applied."
+if ($content -match 'DEFAULT_STATUS = "away"' -and $content -match 'FACILITATOR: shipped on main') {
+    Write-Host "Conflict seed already applied on current branch. Skipping."
+    exit 0
 }
 
 $newContent = $content -replace `
@@ -23,8 +28,11 @@ if ($newContent -eq $content) {
 
 Set-Content -Path $statusFile -Value $newContent -NoNewline
 
-git add $statusFile
-git commit -m "feat(status): default unknown members to away (enterprise sync)"
+$prev = $ErrorActionPreference
+$ErrorActionPreference = "Continue"
+git add $statusFile 2>&1 | Out-Null
+git commit -m "feat(status): default unknown members to away (enterprise sync)" 2>&1 | Out-Null
+$ErrorActionPreference = $prev
 
 Write-Host ""
 Write-Host "Committed conflict seed on current branch."

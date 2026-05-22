@@ -1,0 +1,26 @@
+---
+description: TeamPulse workshop conventions for Git + Cursor training
+globs:
+  - app/**
+---
+
+# TeamPulse workshop rules
+
+## Before committing
+
+- Run `pytest` from the `app/` directory; do not commit if tests fail.
+- Keep commits small and focused on one lesson task.
+
+## Code style
+
+- Use lowercase string literals for status values (`online`, `away`, `offline`).
+- Prefer clear commit messages: `feat(scope): imperative summary`.
+
+## Conventions
+
+<!-- Learners add a team convention here in Lesson 4 -->
+
+## Cursor usage
+
+- Reference specific files with `@` (e.g. `@app/src/teampulse/status.py`) when asking Agent for changes.
+- Review every Agent edit before accepting.

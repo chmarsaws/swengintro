@@ -86,6 +86,19 @@ git push
 
 If your Lesson 2 PR is still open, update the PR. If it was already merged, your facilitator may have you open a short follow-up PR—follow their instruction.
 
+## Insights
+
+- **`git fetch origin`** — downloads all new commits and branches from the remote (`origin`) into your local repository, but does *not* change any of your local branches. Think of it as "go check what is new on the server and store a copy locally."
+- **`git checkout learn/<username>/display-name`** — switches back to your feature branch without the `-b` flag, because the branch already exists.
+- **`git checkout main`** — switches to the `main` branch so you can update it before creating your merge.
+- **`git pull origin main`** — fetches `origin/main` and merges it into your current branch in one step. After this, your local `main` matches the server.
+- **`git merge origin/main`** — merges the remote-tracking copy of `main` into your current feature branch. When both branches have changed the same lines, git cannot decide which version to keep and marks the file with **conflict markers** (`<<<<<<<`, `=======`, `>>>>>>>`). Everything between `<<<<<<< HEAD` and `=======` is your version; everything between `=======` and `>>>>>>>` is the incoming version from `main`.
+- **`cd app`** — moves into `app/` to run tests from the correct directory.
+- **`pytest`** — verifies your conflict resolution did not break anything. Always run this *before* committing the merge.
+- **`git add app/src/teampulse/status.py`** — stages the specific file you resolved. This tells git the conflict in that file is settled and should be included in the merge commit.
+- **`git commit -m "merge: resolve status.py conflict with main"`** — finalizes the merge as a new commit. Git recognizes this as a merge commit because of the in-progress merge state left by the conflict.
+- **`git push`** — pushes the updated branch (including your new merge commit) to the remote so the PR reflects the resolved state.
+
 ## Success checklist
 
 - [ ] I ran `git fetch` and merged latest `main` into my branch

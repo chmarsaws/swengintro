@@ -74,6 +74,13 @@ Do not change application behavior yet.
 
 5. Do **not** push yet unless your facilitator says otherwise.
 
+## Insights
+
+- **`cd app`** — changes your working directory to `app/`. Commands like `pytest` and `python` run relative to whichever folder you are in.
+- **`pytest`** — discovers and runs every test file, then prints a pass/fail summary. A green dot per test means it passed; `F` means it failed with a reason.
+- **`python -m teampulse`** — runs the `teampulse` package as a program. The `-m` flag tells Python to look up the package by name and run its `__main__.py`.
+- **`git checkout -b learn/<username>/explore`** — creates a new branch named `learn/<username>/explore` and immediately switches to it. The `-b` flag is what creates the branch; without it `checkout` would only switch to an existing one. All commits you make will now live on this branch instead of on `main`.
+
 ## Success checklist
 
 - [ ] I can find `app/src/teampulse/` and `lessons/` in Cursor

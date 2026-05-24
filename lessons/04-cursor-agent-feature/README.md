@@ -75,6 +75,16 @@ python -m teampulse --online-only
 
 Commit with a clear message, push, and open a PR (or tell facilitator you're done if time is short).
 
+## Insights
+
+- **`git checkout main`** — switches to `main` before branching, so your new branch starts from the latest shared state.
+- **`git pull`** — syncs your local `main` with any commits teammates have merged since you last pulled.
+- **`git checkout -b learn/<username>/busy-and-filter`** — creates and switches to a new branch for this ticket. Each feature gets its own branch so changes stay reviewable and easy to revert independently.
+- **`cd app`** — moves into `app/` where tests run.
+- **`pytest`** — runs the full test suite to confirm the Agent's generated code did not break existing behavior.
+- **`python -m teampulse`** — runs the dashboard without flags; confirms existing output is unchanged.
+- **`python -m teampulse --online-only`** — runs the dashboard with the new `--online-only` flag you just implemented. The `--` prefix is the standard convention for long-form CLI flags. This confirms the filter works and only prints members whose status is `online`.
+
 ## Success checklist
 
 - [ ] I read the facilitator's GitHub issue

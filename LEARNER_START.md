@@ -20,6 +20,13 @@ You are joining a simulated engineering team. Your facilitator will act as other
    python -m teampulse
    ```
 
+## Insights
+
+- **`cd app`** — changes your working directory to `app/`. Commands like `pytest` and `python` will run relative to that folder.
+- **`pip install -e ".[dev]"`** — installs the TeamPulse package in *editable* mode (`-e`) along with its development dependencies. Editable means edits to the source files take effect immediately without reinstalling.
+- **`pytest`** — discovers and runs every test file matching `test_*.py`, then reports how many passed or failed.
+- **`python -m teampulse`** — runs the `teampulse` package as a program (via its `__main__.py`), which starts the CLI dashboard.
+
 ## Rules
 
 - Complete **one lesson at a time**. Check off every item on the success checklist before moving on.

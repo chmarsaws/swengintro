@@ -74,6 +74,16 @@ On GitHub, open a **Pull Request** into `main`. The PR template will prompt you 
 
 **Wait for facilitator review** — they will leave a comment asking for a small change (often commit message polish or a test name). Make the fix, push again, and tell them when ready.
 
+## Insights
+
+- **`git checkout main`** — switches your working tree to the `main` branch so you start your feature from the latest shared code.
+- **`git pull`** — fetches new commits from the remote server and merges them into your current branch. Keeps your local copy of `main` in sync with what teammates have pushed. It is a shortcut for `git fetch` followed by `git merge`.
+- **`git checkout -b learn/<username>/display-name`** — creates a new branch from the current tip of `main` and switches to it. Your feature work is now isolated; it will not affect `main` until you open and merge a PR.
+- **`cd app`** — moves into the `app/` directory where the source code and tests live.
+- **`pytest`** — runs the full test suite. Always do this before committing so you catch regressions early.
+- **`python -m teampulse`** — launches the CLI dashboard so you can visually confirm your `display_name` changes appear correctly.
+- **`git push -u origin learn/<username>/display-name`** — pushes your branch to the remote (`origin`) for the first time. The `-u` flag sets the *upstream*, so future `git push` and `git pull` on this branch automatically target the right remote branch without you having to specify it again.
+
 ## Success checklist
 
 - [ ] `display_name` exists on `TeamMember` and seed data is updated

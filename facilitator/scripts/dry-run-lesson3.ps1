@@ -125,7 +125,7 @@ def set_status(member_id: str, status: str) -> None:
 
 def format_dashboard_line(member: TeamMember) -> str:
     status = get_status(member)
-    return f"{member.display_name}: {status}"
+    return f"{member.display_name}: [{status}]"
 '@ | Set-Content "app\src\teampulse\status.py" -Encoding UTF8
 
     Invoke-Git -Command @("add", "app/src/teampulse/status.py") | Out-Null

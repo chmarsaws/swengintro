@@ -26,6 +26,10 @@ if ($newContent -eq $content) {
     Write-Error "Could not apply conflict seed transformation. Check status.py format."
 }
 
+$newContent = $newContent -replace `
+    'return f"\{member\.name\}: \{status\}"', `
+    'return f"{member.name}: [{status}]"'
+
 Set-Content -Path $statusFile -Value $newContent -NoNewline
 
 $prev = $ErrorActionPreference

@@ -16,12 +16,12 @@ _STATUSES: dict[str, str] = {
 }
 
 
-def get_status(member: TeamMember) -> str:
+def get_member_status(member: TeamMember) -> str:
     """Return the current status for a team member."""
     return _STATUSES.get(member.id, DEFAULT_STATUS)
 
 
-def set_status(member_id: str, status: str) -> None:
+def set_member_status(member_id: str, status: str) -> None:
     """Update status for a member. Raises ValueError if status is invalid."""
     if status not in VALID_STATUSES:
         raise ValueError(f"Invalid status: {status!r}. Must be one of {sorted(VALID_STATUSES)}")
@@ -30,5 +30,5 @@ def set_status(member_id: str, status: str) -> None:
 
 def format_dashboard_line(member: TeamMember) -> str:
     """Format one line for the CLI dashboard."""
-    status = get_status(member)
+    status = get_member_status(member)
     return f"{member.display_name}: {status}"

@@ -48,4 +48,4 @@ You are joining a simulated engineering team. Your facilitator will act as other
 - Read **HINTS.md** in the current lesson folder (optional).
 - Ask your facilitator—especially when the lesson says to wait for a PR review or a new GitHub issue.
 
-**Begin with Lesson 1 →**
+**Begin with Lesson 1 →** [lessons/01-explore-and-branch/README.md](lessons/01-explore-and-branch/README.md)

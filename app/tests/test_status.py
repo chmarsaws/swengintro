@@ -39,5 +39,5 @@ def test_format_dashboard_line():
     member = get_member("jordan")
     assert member is not None
     line = format_dashboard_line(member)
-    assert "Jordan Lee" in line
+    assert "Jordan L." in line
     assert ":" in line

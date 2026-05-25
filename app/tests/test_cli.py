@@ -6,4 +6,4 @@ def test_main_prints_dashboard(capsys):
     assert code == 0
     out = capsys.readouterr().out
     assert "TeamPulse Dashboard" in out
-    assert "Alex Chen" in out
+    assert "Alex C." in out

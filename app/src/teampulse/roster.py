@@ -9,13 +9,14 @@ class TeamMember:
 
     id: str
     name: str
+    display_name: str
 
 
 # Seed roster for the workshop. Learners extend this in Lesson 2 (display_name).
 TEAM: tuple[TeamMember, ...] = (
-    TeamMember(id="alex", name="Alex Chen"),
-    TeamMember(id="jordan", name="Jordan Lee"),
-    TeamMember(id="sam", name="Sam Rivera"),
+    TeamMember(id="alex", name="Alex Chen", display_name="Alex C."),
+    TeamMember(id="jordan", name="Jordan Lee", display_name="Jordan L."),
+    TeamMember(id="sam", name="Sam Rivera", display_name="Sam R."),
 )
 
 

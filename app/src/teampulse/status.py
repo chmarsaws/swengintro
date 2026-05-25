@@ -31,4 +31,4 @@ def set_status(member_id: str, status: str) -> None:
 def format_dashboard_line(member: TeamMember) -> str:
     """Format one line for the CLI dashboard."""
     status = get_status(member)
-    return f"{member.name}: {status}"
+    return f"{member.display_name}: {status}"

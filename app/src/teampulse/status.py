@@ -4,7 +4,8 @@ from teampulse.roster import TeamMember, list_members
 
 # Workshop baseline: unknown members default to offline.
 # Lesson 3: learners and the facilitator both edit this block — expect a merge conflict.
-DEFAULT_STATUS = "offline"
+# FACILITATOR: shipped on main during Lesson 3 — learners merge this change.
+DEFAULT_STATUS = "away"
 
 VALID_STATUSES = frozenset({"online", "away", "offline"})
 
